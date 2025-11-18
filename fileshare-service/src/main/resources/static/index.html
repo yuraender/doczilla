@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Сервис обмена файлами</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Загрузить файл</h1>
+    <form id="uploadForm">
+        <input id="fileInput" type="file" name="file">
+        <button type="submit">Загрузить</button>
+    </form>
+    <div id="progressWrap" class="hidden">
+        <div id="progressBar"></div>
+        <div id="progressText"></div>
+    </div>
+    <div id="result" class="hidden">
+        <p>Ссылка для скачивания:</p>
+        <a id="downloadLink" href="#" target="_blank"></a>
+    </div>
+    <div id="error" class="hidden"></div>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>

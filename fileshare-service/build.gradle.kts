@@ -1,4 +1,4 @@
-val jettyVersion = "11.0.26"
+val jettyVersion = "9.4.58.v20250814"
 
 dependencies {
     implementation("org.eclipse.jetty:jetty-server:$jettyVersion")
