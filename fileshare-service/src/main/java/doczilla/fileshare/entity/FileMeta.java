@@ -26,4 +26,13 @@ public class FileMeta {
     private long size;
     @JsonProperty("createdAt")
     private Instant createdAt;
+
+    @JsonProperty("lastAccessAt")
+    private Instant lastAccessAt;
+    @JsonProperty("downloads")
+    private int downloads;
+
+    public void increaseDownloads() {
+        this.downloads++;
+    }
 }

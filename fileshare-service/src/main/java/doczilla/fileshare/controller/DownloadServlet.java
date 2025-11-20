@@ -39,6 +39,7 @@ public class DownloadServlet extends HttpServlet {
             return;
         }
 
+        metadataStore.updateAccess(token);
         String probeContentType = Files.probeContentType(file);
         resp.setContentType(probeContentType == null ? "application/octet-stream" : probeContentType);
         resp.setHeader("Content-Disposition", "attachment; filename=\"" + meta.getOriginalName() + "\"");

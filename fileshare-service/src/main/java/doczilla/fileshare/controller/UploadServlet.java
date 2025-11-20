@@ -64,7 +64,7 @@ public class UploadServlet extends HttpServlet {
             }
             long size = Files.size(target);
 
-            FileMeta meta = new FileMeta(token, originalName, storedName, size, Instant.now());
+            FileMeta meta = new FileMeta(token, originalName, storedName, size, Instant.now(), Instant.now(), 0);
             metadataStore.put(meta);
 
             resp.setContentType("application/json");

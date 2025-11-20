@@ -9,6 +9,7 @@ import doczilla.fileshare.entity.FileMeta;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +44,15 @@ public class MetadataStore {
     public synchronized void remove(String token) {
         store.remove(token);
         persist();
+    }
+
+    public synchronized void updateAccess(String token) {
+        FileMeta m = store.get(token);
+        if (m != null) {
+            m.setLastAccessAt(Instant.now());
+            m.increaseDownloads();
+            persist();
+        }
     }
 
     private synchronized void load() {
