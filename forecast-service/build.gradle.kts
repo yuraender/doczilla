@@ -1,0 +1,15 @@
+val jettyVersion = "11.0.26"
+
+dependencies {
+    implementation("org.eclipse.jetty:jetty-server:${jettyVersion}")
+    implementation("org.eclipse.jetty:jetty-servlet:${jettyVersion}")
+    implementation("redis.clients:jedis:6.2.0")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.20.1")
+}
+
+tasks.shadowJar {
+    archiveFileName.set("ForecastService.jar")
+    manifest {
+        attributes["Main-Class"] = "doczilla.forecast.Main"
+    }
+}
