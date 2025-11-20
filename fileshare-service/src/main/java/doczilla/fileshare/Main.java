@@ -36,7 +36,7 @@ public class Main {
         ctx.addServlet(staticHolder, "/");
 
         ctx.addServlet(new ServletHolder(new UploadServlet(filesDir.toPath(), metadataStore)), "/upload");
-        ctx.addServlet(new ServletHolder(new DownloadServlet(filesDir.toPath(), metadataStore)), "/download");
+        ctx.addServlet(new ServletHolder(new DownloadServlet(filesDir.toPath(), metadataStore)), "/download/*");
 
         server.setHandler(ctx);
         server.start();
