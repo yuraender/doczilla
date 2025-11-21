@@ -14,10 +14,16 @@ import java.util.*;
 @RequiredArgsConstructor
 public class WeatherService {
 
+    private final RedisService redisService;
     private final ObjectMapper mapper;
 
     public Map<String, Object> getWeather(String city) throws Exception {
-        // Получаем координаты города
+        String cached = redisService.loadCached(city);
+        if (cached != null) {
+            return mapper.readValue(cached, Map.class);
+        }
+
+        // 1. Получаем координаты города
         String geoUrl = "https://geocoding-api.open-meteo.com/v1/search?name=" + city;
         String geoResponse = RequestUtil.sendGet(geoUrl);
         JsonNode geoJson = mapper.readTree(geoResponse);
@@ -28,7 +34,7 @@ public class WeatherService {
         double latitude = results.get(0).get("latitude").asDouble();
         double longitude = results.get(0).get("longitude").asDouble();
 
-        // Получаем прогноз погоды
+        // 2. Получаем прогноз погоды
         String weatherUrl = String.format(
                 "https://api.open-meteo.com/v1/forecast?latitude=%f&longitude=%f&hourly=temperature_2m",
                 latitude, longitude
@@ -58,6 +64,10 @@ public class WeatherService {
         result.put("city", city);
         result.put("times", timeList);
         result.put("temperatures", temperatureList);
+
+        // 3. Сохраняем в Redis
+        redisService.setCached(city, mapper.writeValueAsString(result));
+
         return result;
     }
 }
