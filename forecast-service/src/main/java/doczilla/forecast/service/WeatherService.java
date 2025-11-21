@@ -4,12 +4,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import doczilla.forecast.util.RequestUtil;
 import lombok.RequiredArgsConstructor;
+import org.knowm.xchart.BitmapEncoder;
+import org.knowm.xchart.XYChart;
+import org.knowm.xchart.XYChartBuilder;
 
+import java.awt.*;
+import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class WeatherService {
@@ -29,7 +37,7 @@ public class WeatherService {
         JsonNode geoJson = mapper.readTree(geoResponse);
         JsonNode results = geoJson.get("results");
         if (results == null || !results.isArray() || results.isEmpty()) {
-            throw new RuntimeException("Город не найден");
+            throw new RuntimeException("City not found");
         }
         double latitude = results.get(0).get("latitude").asDouble();
         double longitude = results.get(0).get("longitude").asDouble();
@@ -69,5 +77,34 @@ public class WeatherService {
         redisService.setCached(city, mapper.writeValueAsString(result));
 
         return result;
+    }
+
+    public byte[] plotTemperatureGraph(Map<String, Object> weatherData) throws IOException {
+        List<?> times = ((List<?>) weatherData.get("times"))
+                .stream()
+                .map(e -> {
+                    if (e instanceof Long) {
+                        return Date.from(Instant.ofEpochMilli((Long) e));
+                    }
+                    return e;
+                })
+                .collect(Collectors.toList());
+        List<Double> temperatures = (List<Double>) weatherData.get("temperatures");
+
+        XYChart chart = new XYChartBuilder()
+                .width(1600)
+                .height(900)
+                .title("Температура по часам: " + weatherData.get("city"))
+                .xAxisTitle("Время")
+                .yAxisTitle("Температура")
+                .build();
+
+        chart.getStyler().setLegendVisible(false);
+        chart.getStyler().setXAxisLabelRotation(45);
+        chart.getStyler().setChartBackgroundColor(Color.WHITE);
+
+        chart.addSeries("Temperature", times, temperatures);
+
+        return BitmapEncoder.getBitmapBytes(chart, BitmapEncoder.BitmapFormat.PNG);
     }
 }

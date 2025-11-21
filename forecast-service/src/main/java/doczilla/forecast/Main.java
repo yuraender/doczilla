@@ -25,7 +25,7 @@ public class Main {
         RedisService redisService = new RedisService(redisHost, redisPort, cacheTTL);
         WeatherService weatherService = new WeatherService(redisService, mapper);
 
-        ctx.addServlet(new ServletHolder(new WeatherServlet(weatherService, mapper)), "/weather");
+        ctx.addServlet(new ServletHolder(new WeatherServlet(weatherService)), "/weather");
 
         server.setHandler(ctx);
         server.start();

@@ -5,6 +5,7 @@ dependencies {
     implementation("org.eclipse.jetty:jetty-servlet:${jettyVersion}")
     implementation("redis.clients:jedis:6.2.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.20.1")
+    implementation("org.knowm.xchart:xchart:3.8.8")
 }
 
 tasks.shadowJar {
